@@ -1,26 +1,19 @@
-const { createServer } = require('node:http');
 require('dotenv').config();
-const url = require('url');
-const fs = require('fs');
+const express = require('express');
+const path = require('path');
+const app = express();
 const port = process.env.PORT;
 
-const server = createServer((req, res) => {
-  let q = url.parse(req.url, true);
-  let filename = "." + q.pathname;
-  if (q.pathname === "/") {
-    filename = "./index.html";
-  }
-  fs.readFile(filename, function (err, data) {
+app.get('*', (req, res) => {
+  let filePath = req.url === '/' ? 'index.html' : `${req.url}.html`;
+
+  res.sendFile(path.join(__dirname, filePath), (err) => {
     if (err) {
-      res.writeHead(404, { 'Content-Type': 'text/html' });
-      return res.end("404 Not Found");
+      res.status(404).send('File not found');
     }
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.write(data);
-    return res.end(hello);
   });
 });
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`${process.env.EXAMPLE} Server running at http://localhost:${port}/`);
 });
