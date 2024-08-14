@@ -1,7 +1,8 @@
 const { createServer } = require('node:http');
+require('dotenv').config();
 const url = require('url');
 const fs = require('fs');
-const port = 8080;
+const port = process.env.PORT;
 
 const server = createServer((req, res) => {
   let q = url.parse(req.url, true);
@@ -16,10 +17,10 @@ const server = createServer((req, res) => {
     }
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.write(data);
-    return res.end();
+    return res.end(hello);
   });
 });
 
 server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
+  console.log(`${process.env.EXAMPLE} Server running at http://localhost:${port}/`);
 });
